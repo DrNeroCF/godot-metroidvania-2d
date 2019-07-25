@@ -20,7 +20,7 @@ const HOOKABLE_PHYSICS_LAYER: = 2
 
 var is_aiming: = false setget set_is_aiming
 var is_active: = true setget set_is_active
-var saved_direction: = Vector2(1,0)
+
 
 func _ready() -> void:
 	if Engine.editor_hint:
@@ -58,17 +58,8 @@ func get_hook_target() -> HookTarget:
 func get_aim_direction() -> Vector2:
 	match Settings.controls:
 		Settings.GAMEPAD:
-			if (ControlUtils.get_aim_joystick_full().length() > .5):
-				target_circle.show()
-				saved_direction = ControlUtils.get_aim_joystick_direction()
-			else:
-				target_circle.hide()
-			return saved_direction
+			return ControlUtils.get_aim_joystick_direction()
 		Settings.KBD_MOUSE, _:
-			if ( (get_global_mouse_position() - global_position).length() > 100):
-				target_circle.show()
-			else:
-				target_circle.hide()
 			return (get_global_mouse_position() - global_position).normalized()
 
 

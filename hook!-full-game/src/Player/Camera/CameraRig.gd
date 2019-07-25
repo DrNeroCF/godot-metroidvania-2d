@@ -6,7 +6,7 @@ Rig to move a child camera based on the player's input, to give them more forwar
 
 onready var camera: Camera2D = $ShakingCamera
 
-export var offset: = Vector2(300.0, 300.0)
+export var offset: = Vector2(200.0, 160.0)
 export var mouse_range: = Vector2(100.0, 500.0)
 
 var is_active: = true
@@ -25,13 +25,10 @@ func update_position(velocity: Vector2 = Vector2.ZERO) -> void:
 		Settings.KBD_MOUSE:
 			var mouse_position: = get_local_mouse_position()
 			var distance_ratio: = clamp(mouse_position.length(), mouse_range.x, mouse_range.y) / mouse_range.y
-			camera.position += ( (distance_ratio * mouse_position.normalized() * offset) - camera.position) / 30
+			camera.position = distance_ratio * mouse_position.normalized() * offset
 
 		Settings.GAMEPAD:
-			var joystick_position: Vector2 = ControlUtils.get_aim_joystick_full()
-			var distance_ratio: = clamp(joystick_position.length(), mouse_range.x, mouse_range.y) / mouse_range.y
-			camera.position += ( (joystick_position * offset) - camera.position) / 30
-			
-#			if Input.is_action_pressed("move_right") or Input.is_action_pressed("move_left"):
-#				camera.position.x = sign(velocity.x) * offset.x
-#			camera.position.y = joystick_direction.y * offset.y
+			var joystick_direction: Vector2 = ControlUtils.get_aim_joystick_direction()
+			if Input.is_action_pressed("move_right") or Input.is_action_pressed("move_left"):
+				camera.position.x = sign(velocity.x) * offset.x
+			camera.position.y = joystick_direction.y * offset.y
