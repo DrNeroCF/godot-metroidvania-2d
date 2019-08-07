@@ -111,6 +111,12 @@ anims/transition = SubResource( 2 )
 [node name="Player" parent="." instance=ExtResource( 5 )]
 editor/display_folded = true
 
+[node name="LedgeDetector" parent="Player" index="2"]
+is_active = true
+
+[node name="Air" parent="Player/StateMachine/Move" index="2"]
+acceleration_x = 5000.0
+
 [node name="Wall" parent="Player/StateMachine/Move" index="3"]
 slide_acceleration = 1600.0
 max_slide_speed = 400.0

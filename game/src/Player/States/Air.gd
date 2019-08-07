@@ -31,6 +31,10 @@ func enter(msg: Dictionary = {}) -> void:
 		move.acceleration = Vector2(acceleration_x, move.acceleration_default.y)
 		move.max_speed.x = max(abs(move.velocity.x), move.max_speed_default.x)
 		jump_delay.start()
+	if "velocity" in msg:
+		move.acceleration = Vector2(acceleration_x, move.acceleration_default.y)
+		move.max_speed.x = max(abs(move.velocity.x), move.max_speed_default.x)
+	
 
 
 func unhandled_input(event: InputEvent) -> void:
@@ -46,6 +50,7 @@ func unhandled_input(event: InputEvent) -> void:
 
 func physics_process(delta: float) -> void:
 	var move: = get_parent()
+	
 	var direction: Vector2 = move.get_move_direction() if controls_freeze.is_stopped() else Vector2(sign(move.velocity.x), 1.0)
 	move.velocity = move.calculate_velocity(
 		move.velocity,
@@ -56,11 +61,13 @@ func physics_process(delta: float) -> void:
 	)
 	move.velocity = owner.move_and_slide(move.velocity, owner.FLOOR_NORMAL)
 	Events.emit_signal("player_moved", owner)
-
+	if (direction.x * move.velocity.x < 0):
+		move.max_speed = move.max_speed_default
 	# Landing
 	if owner.is_on_floor():
 		var target_state: = "Move/Idle" if move.get_move_direction().x == 0 else "Move/Run"
 		_state_machine.transition_to(target_state)
+		move.max_speed = move.max_speed_default
 
 	elif owner.ledge_detector.is_against_ledge(sign(move.velocity.x)):
 		_state_machine.transition_to("Ledge", {move_state = move})
